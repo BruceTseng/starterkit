@@ -23,7 +23,7 @@ module.exports = {
       { from: Path.resolve(__dirname, '../public'), to: 'public' }
     ]),
     new HtmlWebpackPlugin({
-      template: Path.resolve(__dirname, '../src/index.html')
+      template: Path.resolve(__dirname, '../src/index.pug')
     })
   ],
   resolve: {
@@ -46,6 +46,10 @@ module.exports = {
             name: '[path][name].[ext]'
           }
         }
+      },
+      {
+        test: /\.pug$/,
+        use: ['html-loader', 'pug-html-loader']
       },
     ]
   }
