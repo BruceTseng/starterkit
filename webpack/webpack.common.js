@@ -2,6 +2,7 @@ const Path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -18,12 +19,20 @@ module.exports = {
     }
   },
   plugins: [
-    new CleanWebpackPlugin(['build'], { root: Path.resolve(__dirname, '..') }),
-    new CopyWebpackPlugin([
-      { from: Path.resolve(__dirname, '../public'), to: 'public' }
-    ]),
+    new CleanWebpackPlugin(['build'], {
+      root: Path.resolve(__dirname, '..')
+    }),
+    new CopyWebpackPlugin([{
+      from: Path.resolve(__dirname, '../public'),
+      to: 'public'
+    }]),
     new HtmlWebpackPlugin({
       template: Path.resolve(__dirname, '../src/index.pug')
+    }),
+    new webpack.ProvidePlugin({
+      '$': "jquery",
+      'jQuery': "jquery",
+      'Popper': 'popper.js'
     })
   ],
   resolve: {
@@ -32,8 +41,7 @@ module.exports = {
     }
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.mjs$/,
         include: /node_modules/,
         type: 'javascript/auto'
