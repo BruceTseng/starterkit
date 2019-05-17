@@ -1,12 +1,13 @@
 const Path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
-    app: Path.resolve(__dirname, '../src/scripts/index.js')
+    index: Path.resolve(__dirname, '../src/scripts/index.js'),
+    demo: Path.resolve(__dirname, '../src/scripts/demo.js'),
   },
   output: {
     path: Path.join(__dirname, '../build'),
@@ -22,17 +23,24 @@ module.exports = {
     new CleanWebpackPlugin(['build'], {
       root: Path.resolve(__dirname, '..')
     }),
-    new CopyWebpackPlugin([{
-      from: Path.resolve(__dirname, '../public'),
-      to: 'public'
-    }]),
-    new HtmlWebpackPlugin({
-      template: Path.resolve(__dirname, '../src/index.pug')
-    }),
     new webpack.ProvidePlugin({
       '$': "jquery",
       'jQuery': "jquery",
       'Popper': 'popper.js'
+    }),
+    new HtmlWebpackPlugin({
+      template: "./src/index.pug",
+      inject: true,
+      chunks: ['index']
+    }),
+    new HtmlWebpackPlugin({
+      filename: "demo.html",
+      template: "./src/demo.pug",
+      inject: true,
+      chunks: ['demo']
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css'
     })
   ],
   resolve: {
@@ -51,7 +59,50 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            name: '[path][name].[ext]'
+            outputPath: 'img',
+            name: '[name].[ext]'
+          }
+        }
+      },
+      {
+        test: /\.(js)$/,
+        include: Path.resolve(__dirname, '../src'),
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      {
+        test: /\.s?css$/i,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader, // extracts css into separate files
+            options: {
+              publicPath: '../'
+            }
+          },
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              ident: 'postcss',
+              plugins: [
+                require('autoprefixer')
+              ]
+            }
+          },
+          "sass-loader"
+        ]
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attrs: ['img:src']
           }
         }
       },

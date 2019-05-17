@@ -5,12 +5,14 @@ const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   mode: 'development',
-  devtool: 'cheap-eval-source-map',
+  devtool: 'inline-source-map',
   output: {
     chunkFilename: 'js/[name].chunk.js'
   },
   devServer: {
-    inline: true
+    inline: true,
+    contentBase: './build',
+    writeToDisk: true // 在開發階段將js寫入
   },
   plugins: [
     new Webpack.DefinePlugin({
@@ -27,15 +29,6 @@ module.exports = merge(common, {
         options: {
           emitWarning: true,
         }
-      },
-      {
-        test: /\.(js)$/,
-        include: Path.resolve(__dirname, '../src'),
-        loader: 'babel-loader'
-      },
-      {
-        test: /\.s?css$/i,
-        use: ['style-loader', 'css-loader?sourceMap=true', 'sass-loader']
       }
     ]
   }

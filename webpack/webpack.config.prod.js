@@ -1,8 +1,8 @@
 const Path = require('path');
 const Webpack = require('webpack');
 const merge = require('webpack-merge');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const common = require('./webpack.common.js');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -18,25 +18,13 @@ module.exports = merge(common, {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new Webpack.optimize.ModuleConcatenationPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'bundle.css'
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.(js)$/,
-        exclude: /node_modules/,
-        use: 'babel-loader'
+    new OptimizeCssAssetsPlugin({
+      // assetNameRegExp: /\.optimize\.css$/g,
+      cssProcessor: require('cssnano'),
+      cssProcessorPluginOptions: {
+        preset: ['default', { discardComments: { removeAll: true } }],
       },
-      {
-        test: /\.s?css/i,
-        use : [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader'
-        ]
-      }
-    ]
-  }
+      canPrint: true
+    })
+  ]
 });
