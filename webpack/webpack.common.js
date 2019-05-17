@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
-    index: Path.resolve(__dirname, '../src/scripts/index.js'),
+    index: Path.resolve(__dirname, '../src/scripts/index.ts'),
     demo: Path.resolve(__dirname, '../src/scripts/demo.js'),
   },
   output: {
@@ -110,6 +110,14 @@ module.exports = {
         test: /\.pug$/,
         use: ['html-loader', 'pug-html-loader']
       },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
     ]
-  }
+  },
+  resolve: {
+    extensions: [ '.tsx', '.ts', '.js' ]
+  },
 };
