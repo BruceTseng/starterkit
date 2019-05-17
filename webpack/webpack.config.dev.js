@@ -10,7 +10,9 @@ module.exports = merge(common, {
     chunkFilename: 'js/[name].chunk.js'
   },
   devServer: {
-    inline: true
+    inline: true,
+    contentBase: './build',
+    writeToDisk: true // 在開發階段將js寫入
   },
   plugins: [
     new Webpack.DefinePlugin({
@@ -27,15 +29,6 @@ module.exports = merge(common, {
         options: {
           emitWarning: true,
         }
-      },
-      {
-        test: /\.(js)$/,
-        include: Path.resolve(__dirname, '../src'),
-        loader: 'babel-loader'
-      },
-      {
-        test: /\.s?css$/i,
-        use: ['style-loader', 'css-loader?sourceMap=true', 'postcss-loader', 'sass-loader']
       }
     ]
   }
