@@ -1,3 +1,3 @@
-import '../styles/demo.scss';
+import '../styles/demo.scss'
 
-console.log('demo');
+console.log('demo')
